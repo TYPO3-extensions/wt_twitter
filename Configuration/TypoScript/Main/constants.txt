@@ -22,12 +22,6 @@ plugin.wttwitter {
 	# cat=plugin.wt_twitter//0090; type=boolean; label= Show retweets: Also show own retweets - only if mode is showOwn (e.g. 1)
 	main.showRetweets = 1
 
-	# cat=plugin.wt_twitter//100; type=text; label= URL of the twitter rss feed: Public rss feed to get the tweets written by an user. Please replace user name with %q as placeholder.
-	main.rssFeed = http://www.twitter-rss.com/user_timeline.php?screen_name=%q
-
-	# cat=plugin.wt_twitter//0800; type=options[,utf8_encode,utf8_decode]; label= Convert Text: Only if you have problems with UTF8 in Frontend (e.g. utf8_decode)
-	main.utf8 =
-
 	# cat=plugin.wt_twitter//9999; type=boolean; label= Debug Mode: Enable or disable some debug output
 	debug = 0
 

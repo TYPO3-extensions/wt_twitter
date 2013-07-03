@@ -1,0 +1,8 @@
+# cat=basic/enable/010; type=string; label=Access token: In order to make authorized calls to Twitter's APIs we need your access token for this application.
+oauth_token =
+
+# cat=basic/enable/020; type=string; label=Access token secret: Secret to sign the requests to Twitter's APIs.
+oauth_token_secret =
+
+# cat=basic/enable/030; type=user[EXT:wt_twitter/Classes/Twitter/SignIn.php:Tx_WtTwitter_Twitter_SignIn->showButton]; label=Sign in with Twitter
+signed=0
