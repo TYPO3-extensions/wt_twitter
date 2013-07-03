@@ -36,6 +36,11 @@ class user_wttwitteruserfunction {
 	var $cObj = NULL;
 
 	/**
+	 * @var array
+	 */
+	var $conf = array();
+
+	/**
 	 * Remove a given string from another string
 	 *
 	 * @var string $content: Empty content variable
@@ -71,7 +76,7 @@ class user_wttwitteruserfunction {
 		$string = str_replace('http://www.', 'www.', $string); // replace all link beginnings to http://www (part 1)
 		$string = str_replace('www.', 'http://www.', $string); // replace all link beginnings to http://www (part 2)
 		preg_match_all('/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i', $string, $arr_result); // get all links of the string
-		foreach ((array)$arr_result[0] as $key => $url) { // one loop for every link in the string
+		foreach ((array)$arr_result[0] as $url) { // one loop for every link in the string
 			if (!empty($url)) { // if there is a URL
 				$typolinkconf = array('parameter' => $url); // typolink configuration
 				$typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
@@ -81,7 +86,7 @@ class user_wttwitteruserfunction {
 
 		// 2. rewrite @name with typolink to www.twitter.com/name
 		preg_match_all('/(^|\s)@(\w+)/', $string, $arr_result2); // get all twitternames of the string
-		foreach ((array)$arr_result2[0] as $key => $value) { // one loop for every twittername in string
+		foreach ((array)$arr_result2[0] as $value) { // one loop for every twittername in string
 			$value = trim($value); // trim it
 			if (!empty($value)) { // if there is a value
 				$typolinkconf = array('parameter' => 'http://www.twitter.com/' . str_replace('@', '', $value)); // typolink configuration
@@ -93,7 +98,7 @@ class user_wttwitteruserfunction {
 		// 3. rewrite #hashtag with typolink to search.twitter.com/search?q=#hashtag
 		#preg_match_all('/(^|\s)#(\w+)/', $string, $arr_result3); // get all twitternames of the string
 		preg_match_all('/(^|\s)#([\S]+)/', $string, $arr_result3);
-		foreach ((array)$arr_result3[0] as $key => $value) { // one loop for every twittername in string
+		foreach ((array)$arr_result3[0] as $value) { // one loop for every twittername in string
 			$value = trim($value); // trim it
 			if (!empty($value)) { // if there is a value
 				$typolinkconf = array('parameter' => 'http://search.twitter.com/search?q=%23' . str_replace('#', '', $value)); // typolink configuration

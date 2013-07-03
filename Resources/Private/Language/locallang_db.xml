@@ -14,7 +14,7 @@
 			<label index="pi_flexform.mode.0">Show tweets by username</label>
 			<label index="pi_flexform.mode.1">Show Own and Friend Tweets</label>
 			<label index="pi_flexform.mode.2">Show Friends Tweets</label>
-			<label index="pi_flexform.mode.3">Show Tweets from Searchterm</label>
+			<label index="pi_flexform.mode.3">Show Tweets from search term</label>
 			<label index="pi_flexform.template">Path to HTML template (optional)</label>
 			<label index="pi_flexform.limit">Limit (optional)</label>
 			<label index="pi_flexform.hashtag">Enter a hashtag</label>

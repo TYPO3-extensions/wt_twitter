@@ -1,19 +1,21 @@
 // Create namespace
-if (at == undefined) var at = {};
-if (at.bartelme == undefined) at.bartelme = {};
+if (at == undefined) {
+	var at = {};
+}
+if (at.bartelme == undefined) {
+	at.bartelme = {};
+}
 
 // Newsticker Class
 at.bartelme.newsticker = Class.create();
 at.bartelme.newsticker.prototype = {
-	initialize: function()
-	{
+	initialize: function () {
 		// Get elements
 		this.interval = 10000;
 		this.container = $("wt_twitter_newsticker");
-		this.messages  = $A(this.container.getElementsByTagName("li"));
+		this.messages = $A(this.container.getElementsByTagName("li"));
 		this.number_of_messages = this.messages.length;
-		if (this.number_of_messages == 0)
-		{
+		if (this.number_of_messages == 0) {
 			this.showError();
 			return false;
 		}
@@ -30,13 +32,12 @@ at.bartelme.newsticker.prototype = {
 		this.showMessage();
 		// Install timer
 		this.timer = setInterval(this.showMessage.bind(this), this.interval);
-  	},
-	showMessage: function()
-	{
+		return true;
+	},
+	showMessage: function () {
 		Effect.Appear(this.messages[this.current_message]);
-		setTimeout(this.fadeMessage.bind(this), this.interval-2000);
-		if (this.current_message < this.number_of_messages-1)
-		{
+		setTimeout(this.fadeMessage.bind(this), this.interval - 2000);
+		if (this.current_message < this.number_of_messages - 1) {
 			this.previous_message = this.current_message;
 			this.current_message = this.current_message + 1;
 		} else {
@@ -44,25 +45,19 @@ at.bartelme.newsticker.prototype = {
 			this.previous_message = this.number_of_messages - 1;
 		}
 	},
-	fadeMessage: function()
-	{
+	fadeMessage: function () {
 		Effect.Fade(this.messages[this.previous_message]);
 	},
-	hideMessages: function()
-	{
-		this.messages.each(function(message)
-		{
+	hideMessages: function () {
+		this.messages.each(function (message) {
 			Element.hide(message);
 		})
 	},
-	toggle: function()
-	{
+	toggle: function () {
 		Effect.BlindUp(this.container, 1000);
 	},
-	showError: function()
-	{
-		if (this.container.getElementsByTagName("ul").length == 0)
-		{
+	showError: function () {
+		if (this.container.getElementsByTagName("ul").length == 0) {
 			this.list = document.createElement("ul");
 			this.container.appendChild(this.list);
 		} else {
@@ -73,6 +68,8 @@ at.bartelme.newsticker.prototype = {
 		this.errorMessage.innerHTML = "Could not retrieve data";
 		this.list.appendChild(this.errorMessage);
 	}
-}
+};
 
-Event.observe(window, "load", function(){new at.bartelme.newsticker()}, false);
+Event.observe(window, "load", function () {
+	new at.bartelme.newsticker()
+}, false);
