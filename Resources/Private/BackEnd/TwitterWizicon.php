@@ -61,7 +61,8 @@ class tx_wttwitter_pi1_wizicon {
 	 */
 	function includeLocalLang() {
 		$llFile = t3lib_extMgm::extPath('wt_twitter') . '/Resources/Private/Language/locallang_module.xml';
-		$LOCAL_LANG = t3lib_div::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
+
+		$LOCAL_LANG = Tx_WtTwitter_Utility_Compatibility::readLLXMLfile($llFile, $GLOBALS['LANG']->lang);
 
 		return $LOCAL_LANG;
 	}

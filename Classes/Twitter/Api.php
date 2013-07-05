@@ -127,20 +127,6 @@ final class Tx_WtTwitter_Twitter_Api {
 	 *
 	 * @return string
 	 */
-	public static function implodeArrayForUrl(array $parameterArray) {
-		$parts = array();
-		foreach ($parameterArray as $key => $value) {
-			$parts[] = $key . '=' . rawurlencode($value);
-		}
-
-		return implode('&', $parts);
-	}
-
-	/**
-	 * @param array $parameterArray
-	 *
-	 * @return string
-	 */
 	public static function implodeArrayForHeader(array $parameterArray) {
 		$parts = array();
 		foreach ($parameterArray as $key => $value) {
@@ -148,6 +134,20 @@ final class Tx_WtTwitter_Twitter_Api {
 		}
 
 		return implode(', ', $parts);
+	}
+
+	/**
+	 * @param array $parameterArray
+	 *
+	 * @return string
+	 */
+	public static function implodeArrayForUrl(array $parameterArray) {
+		$parts = array();
+		foreach ($parameterArray as $key => $value) {
+			$parts[] = $key . '=' . rawurlencode($value);
+		}
+
+		return implode('&', $parts);
 	}
 
 	/**
@@ -221,7 +221,7 @@ final class Tx_WtTwitter_Twitter_Api {
 	public static function getTweetsFromUserTimeline($oAuthToken, $oAuthTokenSecret, $screenName, $showRetweets, $count) {
 		$tweets = array();
 		$parameter = array();
-		if (t3lib_div::testInt($screenName)) {
+		if (Tx_WtTwitter_Utility_Compatibility::testInt($screenName)) {
 			$parameter['user_id'] = $screenName;
 		} else {
 			$parameter['screen_name'] = $screenName;

@@ -1,3 +1,8 @@
+2013-07-05  Nicole Cordes <cordes@cps-it.de>
+
+	* Release of wt_twitter 1.0.0
+	* Added support for Twitter Api 1.1 and TYPO3 6.x
+
 2013-06-12  Nicole Cordes <cordes@cps-it.de>
 
 	* Release of wt_twitter 0.5.6
