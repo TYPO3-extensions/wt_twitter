@@ -32,6 +32,30 @@
 class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controller_ActionController {
 
 	/**
+	 * Initializes the current action
+	 *
+	 * @return void
+	 */
+	public function initializeAction() {
+		// Merge flexForm and TypoScript values
+		$settings = (array)$this->settings['setup'];
+		if (is_array($this->settings['flexform'])) {
+			foreach ($this->settings['flexform'] as $key => $value) {
+				if (!empty($value)) {
+					$settings[$key] = $value;
+				}
+			}
+			unset($key, $value);
+		}
+		$this->settings = $settings;
+
+		// Set cache if cache_timeout was not set in the current page
+		if ($GLOBALS['TSFE']->page['cache_timeout'] == 0) {
+			$GLOBALS['TSFE']->set_cache_timeout_default($this->settings['cache_timeout']); // cache of current page should be renewed after 50 Min
+		}
+	}
+
+	/**
 	 * List action for this controller. Displays a list of twitter entries.
 	 *
 	 * @return string The rendered view
@@ -73,37 +97,13 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 		}
 		$this->view->assign('tweets', $tweets); // array to view
 
-		if (count($this->settings) < 6) { // only flexform config (but no typoscript)
+		if (count($this->settings) < 5) { // only flexform config (but no TypoScript)
 			$this->flashMessageContainer->add('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
 		}
 
 		if ($this->settings['debug'] == 1) {
 			t3lib_utility_Debug::debug($this->settings, 'TypoScript and Flexform settings');
 			t3lib_utility_Debug::debug($tweets, 'Result Array from Twitter');
-		}
-	}
-
-	/**
-	 * Initializes the current action
-	 *
-	 * @return void
-	 */
-	public function initializeAction() {
-		// Merge flexForm and TypoScript values
-		$settings = (array)$this->settings['setup'];
-		if (is_array($this->settings['flexform'])) {
-			foreach ($this->settings['flexform'] as $key => $value) {
-				if (!empty($value)) {
-					$settings[$key] = $value;
-				}
-			}
-			unset($key, $value);
-		}
-		$this->settings = $settings;
-
-		// Set cache if cache_timeout was not set in the current page
-		if ($GLOBALS['TSFE']->page['cache_timeout'] == 0) {
-			$GLOBALS['TSFE']->set_cache_timeout_default($this->settings['cache_timeout']); // cache of current page should be renewed after 50 Min
 		}
 	}
 }
