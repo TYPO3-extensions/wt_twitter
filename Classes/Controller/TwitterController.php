@@ -62,6 +62,7 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 	 */
 	public function listAction() {
 		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
+		$response = '';
 		$tweets = array();
 
 		if (empty($extensionConfiguration['oauth_token']) || empty($extensionConfiguration['oauth_token_secret'])) {
@@ -85,7 +86,8 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 						$extensionConfiguration['oauth_token_secret'],
 						$this->settings['account'],
 						$this->settings['showRetweets'],
-						$count
+						$count,
+						$response
 					);
 					break;
 				case 'showFromSearch':
@@ -93,11 +95,28 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 						$extensionConfiguration['oauth_token'],
 						$extensionConfiguration['oauth_token_secret'],
 						$this->settings['hashtag'],
-						$count
+						$count,
+						$response
 					);
 					break;
 			}
 		}
+		// Look up for any errors
+		if ($response !== '') {
+			$response = json_decode($response);
+			if (!empty($response->errors)) {
+				foreach ($response->errors as $error) {
+					$this->flashMessageContainer->add(
+						$error->message . ' (error code: ' . $error->code . ')',
+						'Error ' . $error->code,
+						t3lib_FlashMessage::ERROR
+					);
+				}
+				unset($error);
+			}
+		}
+
+		// Assign tweets
 		if (!$this->settings['sortDESC']) {
 			$tweets = array_reverse($tweets);
 		}

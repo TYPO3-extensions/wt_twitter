@@ -154,11 +154,12 @@ final class Tx_WtTwitter_Twitter_Api {
 	 * @param string $oAuthToken
 	 * @param string $oAuthTokenSecret
 	 * @param string $query
-	 * @param string $count
+	 * @param string|NULL $count
+	 * @param NULL $returnedResponse
 	 *
 	 * @return array
 	 */
-	public static function getTweetsFromSearch($oAuthToken, $oAuthTokenSecret, $query, $count) {
+	public static function getTweetsFromSearch($oAuthToken, $oAuthTokenSecret, $query, $count = NULL, &$returnedResponse = NULL) {
 		$tweets = array();
 		$parameter = array(
 			'q' => $query,
@@ -193,6 +194,9 @@ final class Tx_WtTwitter_Twitter_Api {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
 		$response = curl_exec($ch);
+		if (isset($returnedResponse)) {
+			$returnedResponse = $response;
+		}
 		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
 			$responseObject = json_decode($response);
 			$tweets = $responseObject->statuses;
@@ -214,11 +218,12 @@ final class Tx_WtTwitter_Twitter_Api {
 	 * @param string $oAuthTokenSecret
 	 * @param string $screenName
 	 * @param integer $showRetweets
-	 * @param string $count
+	 * @param string|NULL $count
+	 * @param NULL $returnedResponse
 	 *
 	 * @return array
 	 */
-	public static function getTweetsFromUserTimeline($oAuthToken, $oAuthTokenSecret, $screenName, $showRetweets, $count) {
+	public static function getTweetsFromUserTimeline($oAuthToken, $oAuthTokenSecret, $screenName, $showRetweets, $count = NULL, &$returnedResponse = NULL) {
 		$tweets = array();
 		$parameter = array();
 		if (Tx_WtTwitter_Utility_Compatibility::testInt($screenName)) {
@@ -261,6 +266,9 @@ final class Tx_WtTwitter_Twitter_Api {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
 		$response = curl_exec($ch);
+		if (isset($returnedResponse)) {
+			$returnedResponse = $response;
+		}
 		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
 			$tweets = json_decode($response);
 			$tweets = array_slice($tweets, 0, $count);
