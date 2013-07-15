@@ -1,3 +1,9 @@
+2013-07-13  Nicole Cordes <cordes@cps-it.de>
+
+	* Release of wt_twitter 1.0.1
+	* Fixed Bug #49729: Fatal error: Class 'Tx_WtTwitter_Utility_Compatibility' not found
+	* Added Feature #9652: Show error if CURL is off (Thanks to Alex Kellner)
+
 2013-07-05  Nicole Cordes <cordes@cps-it.de>
 
 	* Release of wt_twitter 1.0.0
