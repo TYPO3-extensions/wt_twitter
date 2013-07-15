@@ -97,7 +97,7 @@ class user_wttwitteruserfunction {
 
 		// 3. rewrite #hashtag with typolink to search.twitter.com/search?q=#hashtag
 		#preg_match_all('/(^|\s)#(\w+)/', $string, $arr_result3); // get all twitternames of the string
-		preg_match_all('/(^|\s)#([\S]+)/', $string, $arr_result3);
+		preg_match_all('/(^|\s)#([\w]+)/', $string, $arr_result3);
 		foreach ((array)$arr_result3[0] as $value) { // one loop for every twittername in string
 			$value = trim($value); // trim it
 			if (!empty($value)) { // if there is a value
