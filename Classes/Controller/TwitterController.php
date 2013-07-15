@@ -70,9 +70,9 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 				'Twitter account not authorize',
 				t3lib_FlashMessage::ERROR
 			);
-		} elseif (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse']) {
+		} elseif (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] || !function_exists('curl_init')) {
 			$this->flashMessageContainer->add(
-				'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse].',
+				'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
 				'No curl available',
 				t3lib_FlashMessage::ERROR
 			);

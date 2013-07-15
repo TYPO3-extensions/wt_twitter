@@ -41,7 +41,7 @@ class Tx_WtTwitter_Twitter_SignIn {
 
 		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
 		if (empty($extensionConfiguration['oauth_token']) || empty($extensionConfiguration['oauth_token_secret'])) {
-			if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse']) {
+			if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] && function_exists('curl_init')) {
 				$url = Tx_WtTwitter_Twitter_Api::getRequestTokenUrl();
 
 				$ch = curl_init();
@@ -94,7 +94,7 @@ class Tx_WtTwitter_Twitter_SignIn {
 				curl_close($ch);
 			} else {
 				$flashMessage = t3lib_div::makeInstance('t3lib_FlashMessage',
-					'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse].',
+					'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
 					'No curl available',
 					t3lib_FlashMessage::ERROR
 				);
