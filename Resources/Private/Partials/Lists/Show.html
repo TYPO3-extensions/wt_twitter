@@ -1,0 +1,16 @@
+<f:for each="{lists}" as="list">
+	<li style="padding: 10px; min-height: 40px;">
+		<f:link.external uri="https://www.twitter.com{list.uri}" target="_blank" >{list.name}</f:link.external>
+		<f:if condition="{list.description}">
+			<f:then>
+				<br />
+				{list.description}
+			</f:then>
+		</f:if>
+		<br />
+		{list.member_count} <f:translate key="members" />
+		<br />
+		{list.subscriber_count} <f:translate key="subscribers" />
+		<div style="clear: both"></div>
+	</li>
+</f:for>

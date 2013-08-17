@@ -95,7 +95,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 
-		return $this->addOldUserInformation($this->sliceTweets($tweets, $settings['limit']));
+		return $this->addOldUserInformation($this->sliceArray($tweets, $settings['limit']));
 	}
 
 	/**
@@ -115,7 +115,54 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $result->statuses;
 		}
 
-		return $this->addOldUserInformation($this->sliceTweets($tweets, $settings['limit']));
+		return $this->addOldUserInformation($this->sliceArray($tweets, $settings['limit']));
+	}
+
+	public function getListsFromUser($settings, &$response = NULL) {
+		$lists = array();
+
+		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
+			$parameter = array(
+				'count' => ((int) $settings['limit'] > 0 ? $settings['limit'] : '1000'),
+				'cursor' => '-1'
+			);
+
+			// Get screen name
+			if (Tx_WtTwitter_Utility_Compatibility::testInt($settings['account'])) {
+				$parameter['user_id'] = $settings['account'];
+			} else {
+				$parameter['screen_name'] = $settings['account'];
+			}
+
+			$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsOwnershipsUrl(), 'GET', $parameter, $response);
+			$lists = $result->lists;
+
+			usort($lists, function($a, $b) use ($settings) {
+				switch ($settings['orderby']) {
+					case 'subscriberCount':
+						$valueA = (int) $a->subscriber_count;
+						$valueB = (int) $b->subscriber_count;
+						break;
+					case 'memberCount':
+						$valueA = (int) $a->member_count;
+						$valueB = (int) $b->member_count;
+						break;
+					default:
+						$dateA = new DateTime($a->created_at);
+						$valueA = $dateA->getTimestamp();
+						$dateB = new DateTime($b->created_at);
+						$valueB = $dateB->getTimestamp();
+				}
+
+				if ($valueA === $valueB) {
+					return 0;
+				}
+
+				return ($valueA > $valueB) ? -1 : 1;
+			});
+		}
+
+		return $lists;
 	}
 
 	/**
@@ -171,16 +218,16 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
-	 * @param array $tweets
+	 * @param array $array
 	 * @param integer $count
 	 * @return array
 	 */
-	protected function sliceTweets(array $tweets, $count) {
-		if (count($tweets) <= $count) {
-			return $tweets;
+	protected function sliceArray(array $array, $count) {
+		if (empty($count) || count($array) <= $count) {
+			return $array;
 		}
 
-		return array_slice($tweets, 0, $count);
+		return array_slice($array, 0, $count);
 	}
 
 	/**

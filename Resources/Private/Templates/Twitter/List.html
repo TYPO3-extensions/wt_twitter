@@ -1,21 +1,20 @@
 <div id="wt_twitter_newsticker">
 	<f:flashMessages class="wt_twitter_errors" style="background-color: #FBB19B; padding: 5px 30px; font-weight: bold; border: 1px solid #DC4C42; margin-bottom: 20px; font-family: arial, verdana; color: #444; font-size: 12px;" />
 	<ul class="wttwitter_feed" style="list-style-type: none;">
-		<f:for each="{tweets}" as="tweet">
-			<li style="padding: 10px; min-height: 40px;">
-				<f:if condition="{tweet.from_user}">
-					<f:link.external uri="http://twitter.com/{tweet.from_user}" target="_blank">
-						<img src="{tweet.profile_image_url}" alt="{tweet.from_user}" class="wt_twitter_profile_image" style="float: left; margin-right: 10px; border: 0;" />
-					</f:link.external>
-					<f:link.external uri="http://twitter.com/{tweet.from_user}" target="_blank">{tweet.from_user}</f:link.external>
-				</f:if>
-
-				{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.created_at', currentValueKey: 'created_at')}<br />
-
-				{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}
-
-				<div style="clear: both"></div>
-			</li>
-		</f:for>
+		<f:if condition="{0: settings.mode} == {0: 'showOwn'}">
+			<f:then>
+				<f:render partial="Tweets/Show" arguments="{tweets: tweets}" />
+			</f:then>
+		</f:if>
+		<f:if condition="{0: settings.mode} == {0: 'showFromSearch'}">
+			<f:then>
+				<f:render partial="Tweets/Show" arguments="{tweets: tweets}" />
+			</f:then>
+		</f:if>
+		<f:if condition="{0: settings.mode} == {0: 'showListsFrom'}">
+			<f:then>
+				<f:render partial="Lists/Show" arguments="{lists: tweets}" />
+			</f:then>
+		</f:if>
 	</ul>
 </div>

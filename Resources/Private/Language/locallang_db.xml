@@ -8,6 +8,7 @@
 		<languageKey index="default" type="array">
 			<label index="tt_content.list_type_pi1">Show Twitter Feeds</label>
 			<label index="pi_flexform.sheet_main">Main Settings</label>
+			<label index="pi_flexform.template">Path to HTML template (optional)</label>
 			<label index="pi_flexform.account">Username</label>
 			<label index="pi_flexform.password">Twitter Password</label>
 			<label index="pi_flexform.mode">Mode</label>
@@ -15,13 +16,18 @@
 			<label index="pi_flexform.mode.1">Show Own and Friend Tweets</label>
 			<label index="pi_flexform.mode.2">Show Friends Tweets</label>
 			<label index="pi_flexform.mode.3">Show Tweets from search term</label>
-			<label index="pi_flexform.template">Path to HTML template (optional)</label>
-			<label index="pi_flexform.limit">Limit (optional)</label>
+			<label index="pi_flexform.mode.4">Show lists from username</label>
 			<label index="pi_flexform.hashtag">Enter a hashtag</label>
+			<label index="pi_flexform.orderby">Order by</label>
+			<label index="pi_flexform.orderby.0">Creation date</label>
+			<label index="pi_flexform.orderby.1">Subscriber count</label>
+			<label index="pi_flexform.orderby.2">Member count</label>
+			<label index="pi_flexform.limit">Limit (optional)</label>
 		</languageKey>
 		<languageKey index="de" type="array">
 			<label index="tt_content.list_type_pi1">Zeige Twitter Einträge</label>
 			<label index="pi_flexform.sheet_main">Einstellungen</label>
+			<label index="pi_flexform.template">HTML Template Pfad (optional)</label>
 			<label index="pi_flexform.account">Twitter Account</label>
 			<label index="pi_flexform.password">Twitter Passwort</label>
 			<label index="pi_flexform.mode">Modus</label>
@@ -29,9 +35,13 @@
 			<label index="pi_flexform.mode.1">Zeige eigene und befreundete Tweets</label>
 			<label index="pi_flexform.mode.2">Zeige befreundete Tweets</label>
 			<label index="pi_flexform.mode.3">Zeige Tweets anhand von Suchbegriff</label>
-			<label index="pi_flexform.template">HTML Template Pfad (optional)</label>
-			<label index="pi_flexform.limit">Limit (optional)</label>
+			<label index="pi_flexform.mode.4">Zeige Listen von einem Benutzer</label>
 			<label index="pi_flexform.hashtag">Suche nach Hashtag</label>
+			<label index="pi_flexform.orderby">Sortieren nach</label>
+			<label index="pi_flexform.orderby.0">Erstellungsdatum</label>
+			<label index="pi_flexform.orderby.1">Anzahl der Abonnenten</label>
+			<label index="pi_flexform.orderby.2">Anzahle der Mitglieder</label>
+			<label index="pi_flexform.limit">Limit (optional)</label>
 		</languageKey>
 	</data>
 </T3locallang>

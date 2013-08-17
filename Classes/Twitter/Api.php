@@ -57,6 +57,13 @@ final class Tx_WtTwitter_Twitter_Api {
 	/**
 	 * @return string
 	 */
+	public static function getListsOwnershipsUrl() {
+		return 'https://api.twitter.com/1.1/lists/ownerships.json';
+	}
+
+	/**
+	 * @return string
+	 */
 	public static function getSearchTweetsUrl() {
 		return 'https://api.twitter.com/1.1/search/tweets.json';
 	}
