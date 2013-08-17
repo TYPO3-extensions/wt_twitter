@@ -13,4 +13,3 @@ Tx_Extbase_Utility_Extension::configurePlugin(
 		'Twitter' => ''
 	)
 );
-?>

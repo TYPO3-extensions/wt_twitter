@@ -112,5 +112,3 @@ class Tx_WtTwitter_Twitter_SignIn {
 		return $content;
 	}
 }
-
-?>

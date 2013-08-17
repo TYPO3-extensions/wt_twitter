@@ -67,5 +67,3 @@ final class Tx_WtTwitter_Utility_Compatibility {
 		return FALSE;
 	}
 }
-
-?>

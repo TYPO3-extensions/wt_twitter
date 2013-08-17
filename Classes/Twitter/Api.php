@@ -284,5 +284,3 @@ final class Tx_WtTwitter_Twitter_Api {
 		return $tweets;
 	}
 }
-
-?>

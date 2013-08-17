@@ -67,8 +67,3 @@ class tx_wttwitter_pi1_wizicon {
 		return $LOCAL_LANG;
 	}
 }
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/wt_twitter/Resources/Private/BackEnd/TwitterWizicon.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/wt_twitter/Resources/Private/BackEnd/TwitterWizicon.php']);
-}
-?>

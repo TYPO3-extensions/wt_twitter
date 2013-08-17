@@ -19,4 +19,3 @@ if (TYPO3_MODE == 'BE') {
 
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/Main/', 'Main TypoScript');
 t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript/NewsTicker/', 'Newsticker');
-?>
