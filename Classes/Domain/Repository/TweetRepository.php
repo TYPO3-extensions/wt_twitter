@@ -62,32 +62,10 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 
 	/**
 	 * @param array $settings
-	 * @param integer $count
 	 * @param NULL $response
 	 * @return array
 	 */
-	public function getTweetsFromSearch($settings, $count, &$response = NULL) {
-		$tweets = array();
-
-		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
-			$parameter = array(
-				'q' => $settings['hashtag']
-			);
-
-			$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getSearchTweetsUrl(), 'GET', $parameter, $response);
-			$tweets = $result->statuses;
-		}
-
-		return $this->addOldUserInformation($this->sliceTweets($tweets, $count));
-	}
-
-	/**
-	 * @param array $settings
-	 * @param integer $count
-	 * @param NULL $response
-	 * @return array
-	 */
-	public function getTweetsFromUserTimeline($settings, $count, &$response = NULL) {
+	public function getTweetsFromUserTimeline($settings, &$response = NULL) {
 		$tweets = array();
 
 		if ($this->isTwitterSigned() && $this->isCurlActivated()) {
@@ -117,7 +95,27 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 
-		return $this->addOldUserInformation($this->sliceTweets($tweets, $count));
+		return $this->addOldUserInformation($this->sliceTweets($tweets, $settings['limit']));
+	}
+
+	/**
+	 * @param array $settings
+	 * @param NULL $response
+	 * @return array
+	 */
+	public function getTweetsFromSearch($settings, &$response = NULL) {
+		$tweets = array();
+
+		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
+			$parameter = array(
+				'q' => $settings['hashtag']
+			);
+
+			$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getSearchTweetsUrl(), 'GET', $parameter, $response);
+			$tweets = $result->statuses;
+		}
+
+		return $this->addOldUserInformation($this->sliceTweets($tweets, $settings['limit']));
 	}
 
 	/**

@@ -79,10 +79,10 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 
 		switch ($this->settings['mode']) {
 			case 'showOwn':
-				$tweets = $this->tweetRepository->getTweetsFromUserTimeline($this->settings, $this->settings['limit'], $response);
+				$tweets = $this->tweetRepository->getTweetsFromUserTimeline($this->settings, $response);
 				break;
 			case 'showFromSearch':
-				$tweets = $this->tweetRepository->getTweetsFromSearch($this->settings, $this->settings['limit'], $response);
+				$tweets = $this->tweetRepository->getTweetsFromSearch($this->settings, $response);
 				break;
 		}
 		// Look up for any errors
