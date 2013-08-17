@@ -107,6 +107,13 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 				$parameter['include_rts'] = 'false';
 			}
 
+			// Exclude retweets
+			if ($settings['excludeReplies']) {
+				$parameter['exclude_replies'] = 'true';
+			} else {
+				$parameter['exclude_replies'] = 'false';
+			}
+
 			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 

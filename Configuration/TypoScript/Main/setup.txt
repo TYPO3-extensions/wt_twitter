@@ -12,6 +12,7 @@ plugin.tx_wttwitter {
 			limit = {$plugin.wttwitter.main.limit}
 			sortDESC = {$plugin.wttwitter.main.sortDESC}
 			showRetweets = {$plugin.wttwitter.main.showRetweets}
+			excludeReplies = {$plugin.wttwitter.main.excludeReplies}
 			debug = {$plugin.wttwitter.debug}
 
 			# Tweet Fields (Feed in a loop like text, link, etc..)
