@@ -76,7 +76,7 @@ final class Tx_WtTwitter_Twitter_Api {
 	 */
 	public static function getOAuthParameter($oAuthToken, array $additionalParameter = array()) {
 		$oAuthParameter = array(
-			'oauth_consumer_key' => self::consumerKey,
+			'oauth_consumer_key' => static::consumerKey,
 			'oauth_nonce' => md5(microtime() . mt_rand()),
 			'oauth_signature_method' => 'HMAC-SHA1',
 			'oauth_timestamp' => time(),
@@ -153,131 +153,47 @@ final class Tx_WtTwitter_Twitter_Api {
 	/**
 	 * @param string $oAuthToken
 	 * @param string $oAuthTokenSecret
-	 * @param string $query
-	 * @param string|NULL $count
-	 * @param NULL $returnedResponse
-	 *
+	 * @param string $url
+	 * @param string $method
+	 * @param array $parameter
+	 * @param NULL $response
 	 * @return array
 	 */
-	public static function getTweetsFromSearch($oAuthToken, $oAuthTokenSecret, $query, $count = NULL, &$returnedResponse = NULL) {
+	public static function processRequest($oAuthToken, $oAuthTokenSecret, $url, $method, $parameter, &$response) {
 		$tweets = array();
-		$parameter = array(
-			'q' => $query,
-		);
-
-		$url = self::getSearchTweetsUrl();
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_URL, $url . '?' . Tx_WtTwitter_Twitter_Api::implodeArrayForUrl($parameter));
+		curl_setopt($ch, CURLOPT_URL, $url . '?' . static::implodeArrayForUrl($parameter));
 
-		$oAuthParameter = Tx_WtTwitter_Twitter_Api::createSignature(
-			Tx_WtTwitter_Twitter_Api::getOAuthParameter(
+		$oAuthParameter = static::createSignature(
+			static::getOAuthParameter(
 				$oAuthToken
 			),
 			$url,
-			'GET',
-			Tx_WtTwitter_Twitter_Api::consumerSecret,
+			$method,
+			static::consumerSecret,
 			$oAuthTokenSecret,
 			$parameter
 		);
 
 		$header = array(
-			'Authorization: OAuth ' . self::implodeArrayForHeader($oAuthParameter),
+			'Authorization: OAuth ' . static::implodeArrayForHeader($oAuthParameter),
 			'Content-Length:',
 			'Content-Type:',
 			'Expect:'
 		);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
 
-		$response = curl_exec($ch);
-		if (isset($returnedResponse)) {
-			$returnedResponse = $response;
+		$result = curl_exec($ch);
+		if (isset($response)) {
+			$response = $result;
 		}
 		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-			$responseObject = json_decode($response);
-			$tweets = $responseObject->statuses;
-			$tweets = array_slice($tweets, 0, $count);
-			foreach ($tweets as &$value) {
-				$value->profile_image_url = $value->user->profile_image_url;
-				$value->from_user = $value->user->screen_name;
-			}
-			unset($value);
-
-		}
-		curl_close($ch);
-
-		return $tweets;
-	}
-
-	/**
-	 * @param string $oAuthToken
-	 * @param string $oAuthTokenSecret
-	 * @param string $screenName
-	 * @param integer $showRetweets
-	 * @param string|NULL $count
-	 * @param NULL $returnedResponse
-	 *
-	 * @return array
-	 */
-	public static function getTweetsFromUserTimeline($oAuthToken, $oAuthTokenSecret, $screenName, $showRetweets, $count = NULL, &$returnedResponse = NULL) {
-		$tweets = array();
-		$parameter = array();
-		if (Tx_WtTwitter_Utility_Compatibility::testInt($screenName)) {
-			$parameter['user_id'] = $screenName;
-		} else {
-			$parameter['screen_name'] = $screenName;
-		}
-		if ($showRetweets) {
-			$parameter['include_rts'] = 'true';
-		} else {
-			$parameter['include_rts'] = 'false';
-		}
-
-		$url = self::getUserTimelineUrl();
-
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-		curl_setopt($ch, CURLINFO_HEADER_OUT, 1);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_URL, $url . '?' . Tx_WtTwitter_Twitter_Api::implodeArrayForUrl($parameter));
-
-		$oAuthParameter = Tx_WtTwitter_Twitter_Api::createSignature(
-			Tx_WtTwitter_Twitter_Api::getOAuthParameter(
-				$oAuthToken
-			),
-			$url,
-			'GET',
-			Tx_WtTwitter_Twitter_Api::consumerSecret,
-			$oAuthTokenSecret,
-			$parameter
-		);
-
-		$header = array(
-			'Authorization: OAuth ' . self::implodeArrayForHeader($oAuthParameter),
-			'Content-Length:',
-			'Content-Type:',
-			'Expect:'
-		);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-
-		$response = curl_exec($ch);
-		if (isset($returnedResponse)) {
-			$returnedResponse = $response;
-		}
-		if (curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200) {
-			$tweets = json_decode($response);
-			$tweets = array_slice($tweets, 0, $count);
-			foreach ($tweets as &$value) {
-				$value->profile_image_url = $value->user->profile_image_url;
-				$value->from_user = $value->user->screen_name;
-			}
-			unset($value);
-
+			$tweets = json_decode($result);
 		}
 		curl_close($ch);
 

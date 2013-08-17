@@ -32,6 +32,15 @@
 class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controller_ActionController {
 
 	/**
+	 * @var Tx_WtTwitter_Domain_Repository_TweetRepository
+	 */
+	protected $tweetRepository = NULL;
+
+	public function injectTweetRepository(Tx_WtTwitter_Domain_Repository_TweetRepository $tweetRepository) {
+		$this->tweetRepository = $tweetRepository;
+	}
+
+	/**
 	 * Initializes the current action
 	 *
 	 * @return void
@@ -61,45 +70,20 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 	 * @return string The rendered view
 	 */
 	public function listAction() {
-		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
-		$response = '';
 		$tweets = array();
+		$response = '';
 
-		if (empty($extensionConfiguration['oauth_token']) || empty($extensionConfiguration['oauth_token_secret'])) {
-			$this->flashMessageContainer->add(
-				'Please authorize your Twitter account in the extension settings.',
-				'Twitter account not authorize',
-				t3lib_FlashMessage::ERROR
-			);
-		} elseif (!$GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] || !function_exists('curl_init')) {
-			$this->flashMessageContainer->add(
-				'Please enable the use of curl in TYPO3 Install Tool by activation of TYPO3_CONF_VARS[SYS][curlUse] and check PHP integration.',
-				'No curl available',
-				t3lib_FlashMessage::ERROR
-			);
-		} else {
-			$count = (int)$this->settings['limit'];
-			switch ($this->settings['mode']) {
-				case 'showOwn':
-					$tweets = Tx_WtTwitter_Twitter_Api::getTweetsFromUserTimeline(
-						$extensionConfiguration['oauth_token'],
-						$extensionConfiguration['oauth_token_secret'],
-						$this->settings['account'],
-						$this->settings['showRetweets'],
-						$count,
-						$response
-					);
-					break;
-				case 'showFromSearch':
-					$tweets = Tx_WtTwitter_Twitter_Api::getTweetsFromSearch(
-						$extensionConfiguration['oauth_token'],
-						$extensionConfiguration['oauth_token_secret'],
-						$this->settings['hashtag'],
-						$count,
-						$response
-					);
-					break;
-			}
+		if (count($this->settings) < 8) { // only flexform config (but no TypoScript)
+			$this->flashMessageContainer->add('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
+		}
+
+		switch ($this->settings['mode']) {
+			case 'showOwn':
+				$tweets = $this->tweetRepository->getTweetsFromUserTimeline($this->settings, $this->settings['limit'], $response);
+				break;
+			case 'showFromSearch':
+				$tweets = $this->tweetRepository->getTweetsFromSearch($this->settings, $this->settings['limit'], $response);
+				break;
 		}
 		// Look up for any errors
 		if ($response !== '') {
@@ -121,10 +105,6 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 			$tweets = array_reverse($tweets);
 		}
 		$this->view->assign('tweets', $tweets); // array to view
-
-		if (count($this->settings) < 5) { // only flexform config (but no TypoScript)
-			$this->flashMessageContainer->add('Please add wt_twitter Static Template in the TYPO3 Backend'); // show missing template error
-		}
 
 		if ($this->settings['debug'] == 1) {
 			t3lib_utility_Debug::debug($this->settings, 'TypoScript and Flexform settings');
