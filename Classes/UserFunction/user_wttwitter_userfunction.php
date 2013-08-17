@@ -89,7 +89,7 @@ class user_wttwitteruserfunction {
 		foreach ((array)$arr_result2[0] as $value) { // one loop for every twittername in string
 			$value = trim($value); // trim it
 			if (!empty($value)) { // if there is a value
-				$typolinkconf = array('parameter' => 'http://www.twitter.com/' . str_replace('@', '', $value)); // typolink configuration
+				$typolinkconf = array('parameter' => 'https://www.twitter.com/' . str_replace('@', '', $value)); // typolink configuration
 				$typolinkconf = array_merge((array)$conf['typolink.'], $typolinkconf); // get params from typoscript
 				$string = str_replace($value, $this->cObj->typolink($value, $typolinkconf), $string); // replace each url with typolink
 			}
