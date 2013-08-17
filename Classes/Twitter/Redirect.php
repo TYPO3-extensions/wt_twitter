@@ -27,7 +27,7 @@ require_once('Api.php');
 $oAuthToken = '';
 $oAuthTokenSecret = '';
 if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
-	$url = Tx_WtTwitter_Twitter_Api::getAccessTokenUrl();
+	$url = Tx_WtTwitter_Twitter_Api::getOAuthAccessTokenUrl();
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

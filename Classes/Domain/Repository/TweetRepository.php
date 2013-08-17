@@ -114,7 +114,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 				$parameter['exclude_replies'] = 'false';
 			}
 
-			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getUserTimelineUrl(), 'GET', $parameter, $response);
+			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 
 		return $this->addOldUserInformation($this->sliceTweets($tweets, $count));

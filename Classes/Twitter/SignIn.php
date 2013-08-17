@@ -42,7 +42,7 @@ class Tx_WtTwitter_Twitter_SignIn {
 		$extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
 		if (empty($extensionConfiguration['oauth_token']) || empty($extensionConfiguration['oauth_token_secret'])) {
 			if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] && function_exists('curl_init')) {
-				$url = Tx_WtTwitter_Twitter_Api::getRequestTokenUrl();
+				$url = Tx_WtTwitter_Twitter_Api::getOAuthRequestTokenUrl();
 
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -78,7 +78,7 @@ class Tx_WtTwitter_Twitter_SignIn {
 					$responseArray = t3lib_div::explodeUrl2Array($response);
 
 					$content .= '<a href="#" onclick="twitterWindow = window.open(\'' .
-						Tx_WtTwitter_Twitter_Api::getAuthorizeUrl() . '?oauth_token=' . $responseArray['oauth_token'] .
+						Tx_WtTwitter_Twitter_Api::getOAuthAuthorizeUrl() . '?oauth_token=' . $responseArray['oauth_token'] .
 						'\',\'Sign in with Twitter\',\'height=650,width=650,status=0,menubar=0,resizable=1,location=0,directories=0,scrollbars=1,toolbar=0\');">';
 					$content .= '<img alt="Sign in with Twitter" height="28" src="' . t3lib_extMgm::extRelPath('wt_twitter') . 'Resources/Public/Images/sign-in-with-twitter.png" width="158" />';
 					$content .= '</a>';

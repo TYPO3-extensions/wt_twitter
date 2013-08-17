@@ -36,21 +36,21 @@ final class Tx_WtTwitter_Twitter_Api {
 	/**
 	 * @return string
 	 */
-	public static function getAccessTokenUrl() {
+	public static function getOAuthAccessTokenUrl() {
 		return 'https://api.twitter.com/oauth/access_token';
 	}
 
 	/**
 	 * @return string
 	 */
-	public static function getAuthorizeUrl() {
+	public static function getOAuthAuthorizeUrl() {
 		return 'https://api.twitter.com/oauth/authorize';
 	}
 
 	/**
 	 * @return string
 	 */
-	public static function getRequestTokenUrl() {
+	public static function getOAuthRequestTokenUrl() {
 		return 'https://api.twitter.com/oauth/request_token';
 	}
 
@@ -64,7 +64,7 @@ final class Tx_WtTwitter_Twitter_Api {
 	/**
 	 * @return string
 	 */
-	public static function getUserTimelineUrl() {
+	public static function getStatusesUserTimelineUrl() {
 		return 'https://api.twitter.com/1.1/statuses/user_timeline.json';
 	}
 
