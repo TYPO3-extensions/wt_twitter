@@ -16,5 +16,10 @@
 				<f:render partial="Lists/Show" arguments="{lists: tweets}" />
 			</f:then>
 		</f:if>
+		<f:if condition="{0: settings.mode} == {0: 'showListsFor'}">
+			<f:then>
+				<f:render partial="Lists/Show" arguments="{lists: tweets}" />
+			</f:then>
+		</f:if>
 	</ul>
 </div>

@@ -166,6 +166,60 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
+	 * @param $settings
+	 * @param NULL $response
+	 * @return array
+	 */
+	public function getListsForUser($settings, &$response = NULL) {
+		$lists = array();
+		$cursor = -1;
+
+		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
+			$parameter = array();
+
+			// Get screen name
+			if (Tx_WtTwitter_Utility_Compatibility::testInt($settings['account'])) {
+				$parameter['user_id'] = $settings['account'];
+			} else {
+				$parameter['screen_name'] = $settings['account'];
+			}
+
+			while (!empty($cursor) && ($settings['limit'] == 0 || $settings['limit'] > count($lists))) {
+				$parameter['cursor'] = $cursor;
+				$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsMembershipsUrl(), 'GET', $parameter, $response);
+				$lists = array_merge($lists, (array) $result->lists);
+				$cursor = $result->next_cursor_str;
+			}
+
+			usort($lists, function($a, $b) use ($settings) {
+				switch ($settings['orderby']) {
+					case 'subscriberCount':
+						$valueA = (int) $a->subscriber_count;
+						$valueB = (int) $b->subscriber_count;
+						break;
+					case 'memberCount':
+						$valueA = (int) $a->member_count;
+						$valueB = (int) $b->member_count;
+						break;
+					default:
+						$dateA = new DateTime($a->created_at);
+						$valueA = $dateA->getTimestamp();
+						$dateB = new DateTime($b->created_at);
+						$valueB = $dateB->getTimestamp();
+				}
+
+				if ($valueA === $valueB) {
+					return 0;
+				}
+
+				return ($valueA > $valueB) ? -1 : 1;
+			});
+		}
+
+		return $this->sliceArray($lists, $settings['limit']);
+	}
+
+	/**
 	 * @return boolean
 	 */
 	protected function isTwitterSigned() {

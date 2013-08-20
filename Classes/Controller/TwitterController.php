@@ -87,6 +87,9 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 			case 'showListsFrom':
 				$tweets = $this->tweetRepository->getListsFromUser($this->settings, $response);
 				break;
+			case 'showListsFor':
+				$tweets = $this->tweetRepository->getListsForUser($this->settings, $response);
+				break;
 		}
 		// Look up for any errors
 		if ($response !== '') {

@@ -17,6 +17,7 @@
 			<label index="pi_flexform.mode.2">Show Friends Tweets</label>
 			<label index="pi_flexform.mode.3">Show Tweets from search term</label>
 			<label index="pi_flexform.mode.4">Show lists from username</label>
+			<label index="pi_flexform.mode.5">Show lists for username</label>
 			<label index="pi_flexform.hashtag">Enter a hashtag</label>
 			<label index="pi_flexform.orderby">Order by</label>
 			<label index="pi_flexform.orderby.0">Creation date</label>
@@ -36,6 +37,7 @@
 			<label index="pi_flexform.mode.2">Zeige befreundete Tweets</label>
 			<label index="pi_flexform.mode.3">Zeige Tweets anhand von Suchbegriff</label>
 			<label index="pi_flexform.mode.4">Zeige Listen von einem Benutzer</label>
+			<label index="pi_flexform.mode.5">Zeige Listen zu einem Benutzer</label>
 			<label index="pi_flexform.hashtag">Suche nach Hashtag</label>
 			<label index="pi_flexform.orderby">Sortieren nach</label>
 			<label index="pi_flexform.orderby.0">Erstellungsdatum</label>
