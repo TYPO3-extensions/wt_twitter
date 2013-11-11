@@ -70,7 +70,7 @@ class user_wttwitteruserfunction {
 	function user_wttwitter_link($content = '', $conf = array()) {
 		// config
 		$conf = $conf['userFunc.']; // ts config
-		$string = $this->cObj->data[$conf['field']]; // get date from typoscript
+		$string = $this->cObj->getCurrentVal(); // get date from typoscript
 
 		// 1. rewrite URL with typolink
 		$string = str_replace('http://www.', 'www.', $string); // replace all link beginnings to http://www (part 1)
@@ -138,7 +138,7 @@ class user_wttwitteruserfunction {
 	function user_wttwitter_date($content = '', $conf = array()) {
 		$conf = $conf['userFunc.']; // ts config
 
-		$date = $this->cObj->data[$conf['field']]; // get date from typoscript
+		$date = $this->cObj->getCurrentVal(); // get date from typoscript
 		$timestamp = strtotime($date); // change to timestamp
 		$date = strftime($conf['strftime'], $timestamp); // change back to readable format
 

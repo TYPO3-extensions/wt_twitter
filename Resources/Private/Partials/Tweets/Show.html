@@ -9,7 +9,14 @@
 
 		{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.created_at', currentValueKey: 'created_at')}<br />
 
-		{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}
+		<f:if condition="{tweet.retweeted_status}">
+			<f:then>
+				<f:cObject typoscriptObjectPath="plugin.tx_wttwitter.settings.setup.tweets.text">RT @{tweet.retweeted_status.user.screen_name} {tweet.retweeted_status.text}</f:cObject>
+			</f:then>
+			<f:else>
+				{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}
+			</f:else>
+		</f:if>
 
 		<div style="clear: both"></div>
 	</li>
