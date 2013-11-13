@@ -73,9 +73,7 @@ class user_wttwitteruserfunction {
 		$string = $this->cObj->getCurrentVal(); // get date from typoscript
 
 		// 1. rewrite URL with typolink
-		$string = str_replace('http://www.', 'www.', $string); // replace all link beginnings to http://www (part 1)
-		$string = str_replace('www.', 'http://www.', $string); // replace all link beginnings to http://www (part 2)
-		preg_match_all('/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i', $string, $arr_result); // get all links of the string
+		preg_match_all('/(https?:\/\/|www\.)\S*/i', $string, $arr_result); // get all links of the string
 		foreach ((array)$arr_result[0] as $url) { // one loop for every link in the string
 			if (!empty($url)) { // if there is a URL
 				$typolinkconf = array('parameter' => $url); // typolink configuration
