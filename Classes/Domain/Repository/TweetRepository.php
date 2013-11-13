@@ -46,6 +46,13 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	protected $flashMessageContainer = NULL;
 
 	/**
+	 * The plugin settings
+	 *
+	 * @var array
+	 */
+	protected $settings = array();
+
+	/**
 	 * Constructor function
 	 */
 	public function __construct() {
@@ -67,26 +74,27 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	public function getTweetsFromUserTimeline($settings, &$response = NULL) {
 		$tweets = array();
+		$this->settings = $settings;
 
 		if ($this->isTwitterSigned() && $this->isCurlActivated()) {
 			$parameter = array();
 
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($settings['account'])) {
-				$parameter['user_id'] = $settings['account'];
+			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+				$parameter['user_id'] = $this->settings['account'];
 			} else {
-				$parameter['screen_name'] = $settings['account'];
+				$parameter['screen_name'] = $this->settings['account'];
 			}
 
 			// Enable retweets
-			if ($settings['showRetweets']) {
+			if ($this->settings['showRetweets']) {
 				$parameter['include_rts'] = 'true';
 			} else {
 				$parameter['include_rts'] = 'false';
 			}
 
 			// Exclude retweets
-			if ($settings['excludeReplies']) {
+			if ($this->settings['excludeReplies']) {
 				$parameter['exclude_replies'] = 'true';
 			} else {
 				$parameter['exclude_replies'] = 'false';
@@ -95,7 +103,11 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 
-		return $this->addOldUserInformation($this->sliceArray($tweets, $settings['limit']));
+		$tweets = $this->sliceArray($tweets, $this->settings['limit']);
+		$tweets = $this->addOldUserInformation($tweets);
+		$tweets = $this->rewriteIncludedLinks($tweets);
+
+		return $tweets;
 	}
 
 	/**
@@ -105,33 +117,39 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	public function getTweetsFromSearch($settings, &$response = NULL) {
 		$tweets = array();
+		$this->settings = $settings;
 
 		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
 			$parameter = array(
-				'q' => $settings['hashtag']
+				'q' => $this->settings['hashtag']
 			);
 
 			$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getSearchTweetsUrl(), 'GET', $parameter, $response);
 			$tweets = $result->statuses;
 		}
 
-		return $this->addOldUserInformation($this->sliceArray($tweets, $settings['limit']));
+		$tweets = $this->sliceArray($tweets, $this->settings['limit']);
+		$tweets = $this->addOldUserInformation($tweets);
+		$tweets = $this->rewriteIncludedLinks($tweets);
+
+		return $tweets;
 	}
 
 	public function getListsFromUser($settings, &$response = NULL) {
 		$lists = array();
+		$this->settings = $settings;
 
 		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
 			$parameter = array(
-				'count' => ((int) $settings['limit'] > 0 ? $settings['limit'] : '1000'),
+				'count' => ((int) $this->settings['limit'] > 0 ? $this->settings['limit'] : '1000'),
 				'cursor' => '-1'
 			);
 
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($settings['account'])) {
-				$parameter['user_id'] = $settings['account'];
+			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+				$parameter['user_id'] = $this->settings['account'];
 			} else {
-				$parameter['screen_name'] = $settings['account'];
+				$parameter['screen_name'] = $this->settings['account'];
 			}
 
 			$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsOwnershipsUrl(), 'GET', $parameter, $response);
@@ -172,19 +190,20 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	public function getListsForUser($settings, &$response = NULL) {
 		$lists = array();
+		$this->settings = $settings;
 		$cursor = -1;
 
 		if ($this->isTwitterSigned()&& $this->isCurlActivated()) {
 			$parameter = array();
 
 			// Get screen name
-			if (Tx_WtTwitter_Utility_Compatibility::testInt($settings['account'])) {
-				$parameter['user_id'] = $settings['account'];
+			if (Tx_WtTwitter_Utility_Compatibility::testInt($this->settings['account'])) {
+				$parameter['user_id'] = $this->settings['account'];
 			} else {
-				$parameter['screen_name'] = $settings['account'];
+				$parameter['screen_name'] = $this->settings['account'];
 			}
 
-			while (!empty($cursor) && ($settings['limit'] == 0 || $settings['limit'] > count($lists))) {
+			while (!empty($cursor) && ($this->settings['limit'] == 0 || $this->settings['limit'] > count($lists))) {
 				$parameter['cursor'] = $cursor;
 				$result = $this->callApi(Tx_WtTwitter_Twitter_Api::getListsMembershipsUrl(), 'GET', $parameter, $response);
 				$lists = array_merge($lists, (array) $result->lists);
@@ -216,7 +235,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			});
 		}
 
-		return $this->sliceArray($lists, $settings['limit']);
+		return $this->sliceArray($lists, $this->settings['limit']);
 	}
 
 	/**
@@ -261,7 +280,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 * @return array
 	 */
 	protected function callApi($url, $method, $parameter, $response) {
-		return Tx_WtTwitter_Twitter_Api::processRequest(
+		$tweets = Tx_WtTwitter_Twitter_Api::processRequest(
 			$this->extensionConfiguration['oauth_token'],
 			$this->extensionConfiguration['oauth_token_secret'],
 			$url,
@@ -269,6 +288,8 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$parameter,
 			$response
 		);
+
+		return $tweets;
 	}
 
 	/**
@@ -289,11 +310,31 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 * @return array
 	 */
 	protected function addOldUserInformation(array $tweets) {
-		foreach ($tweets as &$tweet) {
+		foreach ($tweets as $tweet) {
 			$tweet->profile_image_url = $tweet->user->profile_image_url;
 			$tweet->from_user = $tweet->user->screen_name;
 		}
 		unset($tweet);
+
+		return $tweets;
+	}
+
+	/**
+	 * @param array $tweets
+	 * @return array
+	 */
+	protected function rewriteIncludedLinks(array $tweets) {
+		if (!empty($this->settings['rewriteLinks'])) {
+			foreach ($tweets as $tweet) {
+				if ($tweet->entities && $tweet->entities->urls && is_array($tweet->entities->urls)) {
+					foreach ($tweet->entities->urls as $url) {
+						$tweet->text = str_replace($url->url, $url->expanded_url, $tweet->text);
+					}
+					unset($url);
+				}
+			}
+			unset($tweet);
+		}
 
 		return $tweets;
 	}

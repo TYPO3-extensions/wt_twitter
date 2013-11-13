@@ -13,6 +13,7 @@ plugin.tx_wttwitter {
 			sortDESC = {$plugin.wttwitter.main.sortDESC}
 			showRetweets = {$plugin.wttwitter.main.showRetweets}
 			excludeReplies = {$plugin.wttwitter.main.excludeReplies}
+			rewriteLinks = {$plugin.wttwitter.main.rewriteLinks}
 			debug = {$plugin.wttwitter.debug}
 
 			# Tweet Fields (Feed in a loop like text, link, etc..)

@@ -25,6 +25,9 @@ plugin.wttwitter {
 	# cat=plugin.wt_twitter//0100; type=boolean; label= Exclude replies: Filter replies from tweets - only if mode is showOwn (e.g. 1)
 	main.excludeReplies = 0
 
+	# cat=plugin.wt_twitter//0110; type=boolean; label= Rewrite links: Rewrites the twitter links with the original ones
+	main.rewriteLinks = 0
+
 	# cat=plugin.wt_twitter//9999; type=boolean; label= Debug Mode: Enable or disable some debug output
 	debug = 0
 
