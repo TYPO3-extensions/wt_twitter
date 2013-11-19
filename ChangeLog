@@ -1,21 +1,39 @@
-2013-07-13  Nicole Cordes <cordes@cps-it.de>
+2013-11-19         [RELEASE] Release of wt_twitter 2.0.0 (Nicole Cordes)
+2013-11-13 ba1af9c [FEATURE] Add an option to rewrite links (Nicole Cordes)
+2013-11-13 9635964 [TASK] Improve link parsing function (Nicole Cordes)
+2013-11-11 c4f0e42 [BUGFIX] Better handling for retweets (Nicole Cordes)
+2013-08-20 986b2c2 [FEATURE] Add "Show lists for username" (Nicole Cordes)
+2013-08-18 cf09ab7 [FEATURE] Add "Show lists from username" (Nicole Cordes)
+2013-08-18 efe8f82 [BUGFIX] Remove count parameter from reposiory functions (Nicole Cordes)
+2013-08-18 527e74b [TASK] Use https link for twitter accounts (Nicole Cordes)
+2013-08-18 10e1682 [TASK] Rename url api methods according to the url (Nicole Cordes)
+2013-08-18 bbb6965 [FEATURE] Add possibility to exclude replies in user timeline (Nicole Cordes)
+2013-08-17 bb65457 [TASK] Refactor Twitter api (Nicole Cordes)
+2013-08-17 51aae92 [TASK] Remove XCLASS definitions and php closing tags (Nicole Cordes)
+2013-07-23 9309b4c [BUGFIX] #hashtag - Links don't work (Nicole Cordes)
+2013-07-16 236c2d8 [BUGFIX] user_wttwitter_link creates incorrect output (Nicole Cordes)
+2013-07-16 62d3d9f [FEATURE] Handle verification errors (Nicole Cordes)
+2013-07-15 e982e40 [BUGFIX] Check Curl PHP integration (Nicole Cordes)
 
-	* Release of wt_twitter 1.0.1
-	* Fixed Bug #49729: Fatal error: Class 'Tx_WtTwitter_Utility_Compatibility' not found
-	* Added Feature #9652: Show error if CURL is off (Thanks to Alex Kellner)
+2013-07-15         [RELEASE] Release of wt_twitter 1.0.1 (Nicole Cordes)
+2013-07-06 4fd61a0 [FEATURE] Show error if CURL is off (Nicole Cordes)
+2013-07-06 ec5ff26 [BUGFIX] Fatal error: Class 'Tx_WtTwitter_Utility_Compatibility' not found (Nicole Cordes)
 
-2013-07-05  Nicole Cordes <cordes@cps-it.de>
+2013-07-05         [RELEASE] Release of wt_twitter 1.0.0 (Nicole Cordes)
+2013-07-05 0effece Added compatibility layer for 6.x support (Nicole Cordes)
+2013-07-05 e1ba593 Fixed settings count (Nicole Cordes)
+2013-07-05 2e4aa05 Improved redirection script (Nicole Cordes)
+2013-07-03 94fd957 Reformatted code (Nicole Cordes)
+2013-07-03 81f0919 Added support for Twitter Api 1.1 (Nicole Cordes)
 
-	* Release of wt_twitter 1.0.0
-	* Added support for Twitter Api 1.1 and TYPO3 6.x
+2013-06-12         [RELEASE] Release of wt_twitter 0.5.6 (Nicole Cordes)
+2013-06-12 a60aa6e Manual update (Nicole Cordes)
+2013-06-12 2072a86 Removed .idea folder from repository (Nicole Cordes)
+2013-06-12 73d4fb4 Fixed Bug #42682: Still "missing image" (Nicole Cordes)
+2013-06-12 47fde27 Moved rss feed settings to plugin configuration (Nicole Cordes)
+2013-06-12 f14ebc6 Fixed rss feed url due to twitter api changes (Nicole Cordes)
+2013-06-12 0ace1de Added ChangeLog (Nicole Cordes)
 
-2013-06-12  Nicole Cordes <cordes@cps-it.de>
-
-	* Release of wt_twitter 0.5.6
-	* Fixed rss feed url due to twitter api changes
-	* Fixed Bug #42682: Still "missing image" (Thanks to Kurt Kunig)
-	* Manual update
-
-2012-10-24  Alex Kellner <alexander.kellner@in2code.de>
-
-	* Release of wt_twitter 0.5.5
+2012-10-24         [RELEASE] Release of wt_twitter 0.5.5 (wunschtacho)
+2012-10-24 07d795f #39318 (wunschtacho)
+2012-10-24 e395f0b #32407 (wunschtacho)
