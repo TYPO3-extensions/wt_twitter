@@ -56,8 +56,8 @@ class Tx_WtTwitter_Twitter_SignIn {
 					Tx_WtTwitter_Twitter_Api::getOAuthParameter(
 						'',
 						array(
-							'oauth_callback' => 'http://' . t3lib_div::getIndpEnv('HTTP_HOST') . '/' .
-							t3lib_extMgm::siteRelPath('wt_twitter') . 'Classes/Twitter/Redirect.php'
+							'oauth_callback' => t3lib_div::getIndpEnv('TYPO3_SITE_URL') .
+								t3lib_extMgm::siteRelPath('wt_twitter') . 'Classes/Twitter/Redirect.php'
 						)
 					),
 					$url,

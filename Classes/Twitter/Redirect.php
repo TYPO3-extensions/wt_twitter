@@ -91,12 +91,14 @@ if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
 			oAuthTokenObject = parent.window.opener.document.configurationform["tx_extensionmanager_tools_extensionmanagerextensionmanager[config][oauth_token][value]"];
 			oAuthTokenSecretObject = parent.window.opener.document.configurationform["tx_extensionmanager_tools_extensionmanagerextensionmanager[config][oauth_token_secret][value]"];
 		} else {
-			if (parent.window.opener.document.forms &&
-				parent.window.opener.document.forms[parent.window.opener.document.forms.length - 1] &&
-				parent.window.opener.document.forms[parent.window.opener.document.forms.length - 1]["data[oauth_token]"] &&
-				parent.window.opener.document.forms[parent.window.opener.document.forms.length - 1]["data[oauth_token_secret]"]) {
-				oAuthTokenObject = parent.window.opener.document.forms[parent.window.opener.document.forms.length - 1]["data[oauth_token]"];
-				oAuthTokenSecretObject = parent.window.opener.document.forms[parent.window.opener.document.forms.length - 1]["data[oauth_token_secret]"];
+			if (parent.window.opener.document.forms) {
+				for (i=0; i<parent.window.opener.document.forms.length; i++) {
+					if (typeof parent.window.opener.document.forms[i]["data[oauth_token]"] != "undefined") {
+						oAuthTokenObject = parent.window.opener.document.forms[i]["data[oauth_token]"];
+						oAuthTokenSecretObject = parent.window.opener.document.forms[i]["data[oauth_token_secret]"];
+						break;
+					}
+				}
 			}
 		}
 		if (oAuthTokenObject != "" && oAuthTokenSecretObject != "") {
@@ -104,10 +106,9 @@ if (!empty($_GET['oauth_token']) && !empty($_GET['oauth_verifier'])) {
 					echo 'oAuthTokenObject.value = "' . $oAuthToken . '";';
 					echo 'oAuthTokenSecretObject.value = "' . $oAuthTokenSecret . '";';
 			?>
-
+			parent.window.opener.focus();
+			parent.close();
 		}
-		parent.window.opener.focus();
-		parent.close();
 	}
 </script>
 
