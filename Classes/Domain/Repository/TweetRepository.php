@@ -311,6 +311,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 		$this->sliceArray($tweets, $this->settings['limit']);
 		$this->addOldUserInformation($tweets);
 		$this->rewriteIncludedLinks($tweets);
+		$this->linkUrls($tweets);
 		$this->linkHashtags($tweets);
 		$this->linkUsernames($tweets);
 	}
@@ -341,21 +342,59 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
+	 * @param object $url
+	 * @return string
+	 */
+	protected function getVisibleUrl($url) {
+		switch ($this->settings['rewriteLinks']) {
+			case 'short':
+				return $url->display_url;
+			case 'extended':
+				return $url->expanded_url;
+			default:
+				return $url->url;
+		}
+	}
+
+	/**
 	 * @param array $tweets
 	 * @return void
 	 */
-	protected function rewriteIncludedLinks(array $tweets) {
-		if (!empty($this->settings['rewriteLinks'])) {
+	protected function rewriteIncludedLinks($tweets) {
+		if (is_array($tweets) && $this->settings['rewriteLinks'] != 'leave') {
 			foreach ($tweets as $tweet) {
 				if ($tweet->entities && $tweet->entities->urls && is_array($tweet->entities->urls)) {
 					foreach ($tweet->entities->urls as $url) {
-						$tweet->text = str_replace($url->url, $url->expanded_url, $tweet->text);
+						$newUrl = $this->getVisibleUrl($url);
+						$tweet->text = str_replace($url->url, $newUrl, $tweet->text);
 					}
 					unset($url);
 				}
 			}
 			unset($tweet);
 		}
+	}
+
+	/**
+	 * @param array $tweets
+	 * @return void
+	 */
+	protected function linkUrls(&$tweets) {
+		if (is_array($tweets) && !empty($this->settings['linkUrls'])) {
+			foreach ($tweets as $tweet) {
+				if ($tweet->entities && $tweet->entities->urls && is_array($tweet->entities->urls)) {
+					foreach ($tweet->entities->urls as $url) {
+						$urlInText = $this->getVisibleUrl($url);
+						$typolinkConfiguration = array(
+							'parameter' => $url->expanded_url,
+						);
+						$tweet->text = str_replace($urlInText, $this->contentObject->typolink($urlInText, $typolinkConfiguration), $tweet->text);
+					}
+					unset($url);
+				}
+			}
+		}
+		unset($tweet);
 	}
 
 	/**

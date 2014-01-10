@@ -14,6 +14,7 @@ plugin.tx_wttwitter {
 			showRetweets = {$plugin.wttwitter.main.showRetweets}
 			excludeReplies = {$plugin.wttwitter.main.excludeReplies}
 			rewriteLinks = {$plugin.wttwitter.main.rewriteLinks}
+			linkUrls =  {$plugin.wttwitter.main.linkUrls}
 			linkHashtags = {$plugin.wttwitter.main.linkHashtags}
 			linkUsernames = {$plugin.wttwitter.main.linkUsernames}
 			debug = {$plugin.wttwitter.debug}

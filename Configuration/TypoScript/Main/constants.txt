@@ -25,12 +25,16 @@ plugin.wttwitter {
 	# cat=plugin.wt_twitter//0100; type=boolean; label= Exclude replies: Filter replies from tweets - only if mode is showOwn (e.g. 1)
 	main.excludeReplies = 0
 
-	# cat=plugin.wt_twitter//0110; type=boolean; label= Rewrite links: Rewrites the twitter links with the original ones
-	main.rewriteLinks = 0
+	# cat=plugin.wt_twitter//0110; type=options[leave,short,extended]; label= Rewrite links: Rewrites the twitter links with the original ones
+	main.rewriteLinks = leave
+
+	# cat=plugin.wt_twitter//0120; type=boolean; label= Inserts links for used urls
+	main.linkUrls = 1
+
 	# cat=plugin.wt_twitter//0130; type=boolean; label= Inserts links for used hashtags
 	main.linkHashtags = 1
 
-	# cat=plugin.wt_twitter//0120; type=boolean; label= Inserts links for usernames
+	# cat=plugin.wt_twitter//0140; type=boolean; label= Inserts links for usernames
 	main.linkUsernames = 1
 
 	# cat=plugin.wt_twitter//9999; type=boolean; label= Debug Mode: Enable or disable some debug output
