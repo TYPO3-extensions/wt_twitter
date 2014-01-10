@@ -32,6 +32,13 @@
 class Tx_WtTwitter_Domain_Repository_TweetRepository {
 
 	/**
+	 * The content object
+	 *
+	 * @var tslib_cObj
+	 */
+	protected $contentObject = NULL;
+
+	/**
 	 * The extension configuration
 	 *
 	 * @var array
@@ -57,6 +64,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 */
 	public function __construct() {
 		$this->extensionConfiguration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['wt_twitter']);
+		$this->contentObject = t3lib_div::makeInstance('tslib_cObj');
 	}
 
 	/**
@@ -103,9 +111,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $this->callApi(Tx_WtTwitter_Twitter_Api::getStatusesUserTimelineUrl(), 'GET', $parameter, $response);
 		}
 
-		$tweets = $this->sliceArray($tweets, $this->settings['limit']);
-		$tweets = $this->addOldUserInformation($tweets);
-		$tweets = $this->rewriteIncludedLinks($tweets);
+		$this->postProcessTweets($tweets);
 
 		return $tweets;
 	}
@@ -128,9 +134,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			$tweets = $result->statuses;
 		}
 
-		$tweets = $this->sliceArray($tweets, $this->settings['limit']);
-		$tweets = $this->addOldUserInformation($tweets);
-		$tweets = $this->rewriteIncludedLinks($tweets);
+		$this->postProcessTweets($tweets);
 
 		return $tweets;
 	}
@@ -235,7 +239,9 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			});
 		}
 
-		return $this->sliceArray($lists, $this->settings['limit']);
+		$this->sliceArray($lists, $this->settings['limit']);
+
+		return $lists;
 	}
 
 	/**
@@ -293,35 +299,44 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
+	 * @param $tweets
+	 * @return void
+	 */
+	protected function postProcessTweets(&$tweets) {
+		$this->sliceArray($tweets, $this->settings['limit']);
+		$this->addOldUserInformation($tweets);
+		$this->rewriteIncludedLinks($tweets);
+		$this->linkHashtags($tweets);
+	}
+
+	/**
 	 * @param array $array
 	 * @param integer $count
-	 * @return array
+	 * @return void
 	 */
-	protected function sliceArray(array $array, $count) {
-		if (empty($count) || count($array) <= $count) {
-			return $array;
+	protected function sliceArray(&$array, $count) {
+		if (!empty($count) && count($array) > $count) {
+			$array = array_slice($array, 0, $count);
 		}
-
-		return array_slice($array, 0, $count);
 	}
 
 	/**
 	 * @param array $tweets
-	 * @return array
+	 * @return void
 	 */
-	protected function addOldUserInformation(array $tweets) {
-		foreach ($tweets as $tweet) {
-			$tweet->profile_image_url = $tweet->user->profile_image_url;
-			$tweet->from_user = $tweet->user->screen_name;
+	protected function addOldUserInformation(&$tweets) {
+		if (is_array($tweets)) {
+			foreach ($tweets as $tweet) {
+				$tweet->profile_image_url = $tweet->user->profile_image_url;
+				$tweet->from_user = $tweet->user->screen_name;
+			}
+			unset($tweet);
 		}
-		unset($tweet);
-
-		return $tweets;
 	}
 
 	/**
 	 * @param array $tweets
-	 * @return array
+	 * @return void
 	 */
 	protected function rewriteIncludedLinks(array $tweets) {
 		if (!empty($this->settings['rewriteLinks'])) {
@@ -335,8 +350,28 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 			}
 			unset($tweet);
 		}
+	}
 
-		return $tweets;
+	/**
+	 * @param array $tweets
+	 * @return void
+	 */
+	protected function linkHashtags(&$tweets) {
+		if (is_array($tweets) && !empty($this->settings['linkHashtags'])) {
+			foreach ($tweets as $tweet) {
+				if ($tweet->entities && $tweet->entities->hashtags && is_array($tweet->entities->hashtags)) {
+					foreach ($tweet->entities->hashtags as $hashtag) {
+						$hastagText = '#' . $hashtag->text;
+						$typolinkConfiguration = array(
+							'parameter' => 'https://twitter.com/search?q=%23' . rawurlencode($hashtag->text),
+						);
+						$tweet->text = str_replace($hastagText, $this->contentObject->typolink($hastagText, $typolinkConfiguration), $tweet->text);
+					}
+					unset($hashtag);
+				}
+			}
+			unset($tweet);
+		}
 	}
 
 }

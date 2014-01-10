@@ -14,6 +14,7 @@ plugin.tx_wttwitter {
 			showRetweets = {$plugin.wttwitter.main.showRetweets}
 			excludeReplies = {$plugin.wttwitter.main.excludeReplies}
 			rewriteLinks = {$plugin.wttwitter.main.rewriteLinks}
+			linkHashtags = {$plugin.wttwitter.main.linkHashtags}
 			debug = {$plugin.wttwitter.debug}
 
 			# Tweet Fields (Feed in a loop like text, link, etc..)

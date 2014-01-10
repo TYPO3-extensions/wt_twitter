@@ -27,6 +27,8 @@ plugin.wttwitter {
 
 	# cat=plugin.wt_twitter//0110; type=boolean; label= Rewrite links: Rewrites the twitter links with the original ones
 	main.rewriteLinks = 0
+	# cat=plugin.wt_twitter//0130; type=boolean; label= Inserts links for used hashtags
+	main.linkHashtags = 1
 
 	# cat=plugin.wt_twitter//9999; type=boolean; label= Debug Mode: Enable or disable some debug output
 	debug = 0
