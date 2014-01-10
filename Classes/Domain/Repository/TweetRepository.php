@@ -279,7 +279,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	 * @param NULL $response
 	 * @return array
 	 */
-	protected function callApi($url, $method, $parameter, $response) {
+	protected function callApi($url, $method, $parameter, &$response) {
 		$tweets = Tx_WtTwitter_Twitter_Api::processRequest(
 			$this->extensionConfiguration['oauth_token'],
 			$this->extensionConfiguration['oauth_token_secret'],
