@@ -139,6 +139,11 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 		return $tweets;
 	}
 
+	/**
+	 * @param $settings
+	 * @param NULL $response
+	 * @return array
+	 */
 	public function getListsFromUser($settings, &$response = NULL) {
 		$lists = array();
 		$this->settings = $settings;
@@ -307,6 +312,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 		$this->addOldUserInformation($tweets);
 		$this->rewriteIncludedLinks($tweets);
 		$this->linkHashtags($tweets);
+		$this->linkUsernames($tweets);
 	}
 
 	/**
@@ -368,6 +374,28 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 						$tweet->text = str_replace($hastagText, $this->contentObject->typolink($hastagText, $typolinkConfiguration), $tweet->text);
 					}
 					unset($hashtag);
+				}
+			}
+			unset($tweet);
+		}
+	}
+
+	/**
+	 * @param array $tweets
+	 * @return void
+	 */
+	protected function linkUsernames(&$tweets) {
+		if (is_array($tweets) && !empty($this->settings['linkUsernames'])) {
+			foreach ($tweets as $tweet) {
+				if ($tweet->entities && $tweet->entities->user_mentions && is_array($tweet->entities->user_mentions)) {
+					foreach ($tweet->entities->user_mentions as $username) {
+						$screenName = '@' . $username->screen_name;
+						$typolinkConfiguration = array(
+							'parameter' => 'https://twitter.com/' . rawurlencode($username->screen_name),
+						);
+						$tweet->text = str_replace($screenName, $this->contentObject->typolink($screenName, $typolinkConfiguration), $tweet->text);
+					}
+					unset($username);
 				}
 			}
 			unset($tweet);

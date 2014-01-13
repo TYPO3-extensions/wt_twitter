@@ -30,6 +30,9 @@ plugin.wttwitter {
 	# cat=plugin.wt_twitter//0130; type=boolean; label= Inserts links for used hashtags
 	main.linkHashtags = 1
 
+	# cat=plugin.wt_twitter//0120; type=boolean; label= Inserts links for usernames
+	main.linkUsernames = 1
+
 	# cat=plugin.wt_twitter//9999; type=boolean; label= Debug Mode: Enable or disable some debug output
 	debug = 0
 
