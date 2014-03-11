@@ -11,7 +11,7 @@
 
 		<f:if condition="{tweet.retweeted_status}">
 			<f:then>
-				<f:cObject typoscriptObjectPath="plugin.tx_wttwitter.settings.setup.tweets.text">RT @{tweet.retweeted_status.user.screen_name} {tweet.retweeted_status.text}</f:cObject>
+				<f:cObject typoscriptObjectPath="plugin.tx_wttwitter.settings.setup.tweets.text" data="RT @{tweet.retweeted_status.user.screen_name} {tweet.retweeted_status.text}" />
 			</f:then>
 			<f:else>
 				{tweet -> f:cObject(typoscriptObjectPath: 'plugin.tx_wttwitter.settings.setup.tweets.text', currentValueKey: 'text')}

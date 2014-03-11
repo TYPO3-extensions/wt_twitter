@@ -310,10 +310,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	protected function postProcessTweets(&$tweets) {
 		$this->sliceArray($tweets, $this->settings['limit']);
 		$this->addOldUserInformation($tweets);
-		$this->rewriteIncludedLinks($tweets);
-		$this->linkUrls($tweets);
-		$this->linkHashtags($tweets);
-		$this->linkUsernames($tweets);
+		$this->replaceTweetEntities($tweets);
 	}
 
 	/**
@@ -342,6 +339,85 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
+	 * @param array $tweets
+	 * @return void
+	 */
+	protected function replaceTweetEntities(&$tweets) {
+		if (is_array($tweets)) {
+			foreach ($tweets as $tweet) {
+				// Get tweet - this depends whether it's a retweet or not
+				if ($tweet->retweeted == TRUE && is_object($tweet->retweeted_status)) {
+					$charArray = preg_split("//u", $tweet->retweeted_status->text, -1, PREG_SPLIT_NO_EMPTY);
+					$entities = $tweet->retweeted_status->entities;
+				} else {
+					$charArray = preg_split("//u", $tweet->text, -1, PREG_SPLIT_NO_EMPTY);
+					$entities = $tweet->entities;
+				}
+
+				// If links are linked they're rewritten automatically
+				if (empty($this->settings['linkUrls'])) {
+					$this->rewriteIncludedLinks($charArray, $entities);
+				} else {
+					$this->linkUrls($charArray, $entities);
+				}
+				$this->linkHashtags($charArray, $entities);
+				$this->linkUsernames($charArray, $entities);
+
+				// Add pre text if it's a retweet
+				$prependArray = array();
+				if ($tweet->retweeted == TRUE && is_object($tweet->retweeted_status)) {
+					$prependArray = preg_split("//u", 'RT @' . $tweet->entities->user_mentions[0]->screen_name . ': ', -1, PREG_SPLIT_NO_EMPTY);
+					$prependEntities = new stdClass();
+					$prependEntities->user_mentions = array($tweet->entities->user_mentions[0]);
+					$this->linkUsernames($prependArray, $prependEntities);
+				}
+
+				$tweet->text = implode($prependArray) . implode($charArray);
+			}
+			unset($tweet);
+		}
+	}
+
+	/**
+	 * @param array $charArray
+	 * @param object $entities
+	 * @return void
+	 */
+	protected function rewriteIncludedLinks(&$charArray, $entities) {
+		if ($this->settings['rewriteLinks'] != 'leave') {
+			if (is_array($entities->urls)) {
+				foreach ($entities->urls as $url) {
+					$newUrl = $this->getVisibleUrl($url);
+					$charArray[$url->indices[0]] = $newUrl;
+					$this->unsetArray($charArray, $url->indices[0] + 1, $url->indices[1] - 1);
+				}
+				unset($url);
+			}
+		}
+	}
+
+	/**
+	 * @param array $charArray
+	 * @param object $entities
+	 * @return void
+	 */
+	protected function linkUrls(&$charArray, $entities) {
+		if (!empty($this->settings['linkUrls'])) {
+			if (is_array($entities->urls)) {
+				foreach ($entities->urls as $url) {
+					$urlInText = $this->getVisibleUrl($url);
+					$typolinkConfiguration = array(
+						'parameter' => (in_array($this->settings['rewriteLinks'], array('short', 'expanded'))) ? $url->expanded_url : $url->url,
+					);
+					$charArray[$url->indices[0]] = $this->contentObject->typolink($urlInText, $typolinkConfiguration);
+					$this->unsetArray($charArray, $url->indices[0] + 1, $url->indices[1] - 1);
+				}
+				unset($url);
+			}
+		}
+	}
+
+	/**
 	 * @param object $url
 	 * @return string
 	 */
@@ -349,7 +425,7 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 		switch ($this->settings['rewriteLinks']) {
 			case 'short':
 				return $url->display_url;
-			case 'extended':
+			case 'expanded':
 				return $url->expanded_url;
 			default:
 				return $url->url;
@@ -357,87 +433,62 @@ class Tx_WtTwitter_Domain_Repository_TweetRepository {
 	}
 
 	/**
-	 * @param array $tweets
+	 * @param array $charArray
+	 * @param object $entities
 	 * @return void
 	 */
-	protected function rewriteIncludedLinks($tweets) {
-		if (is_array($tweets) && $this->settings['rewriteLinks'] != 'leave') {
-			foreach ($tweets as $tweet) {
-				if ($tweet->entities && $tweet->entities->urls && is_array($tweet->entities->urls)) {
-					foreach ($tweet->entities->urls as $url) {
-						$newUrl = $this->getVisibleUrl($url);
-						$tweet->text = str_replace($url->url, $newUrl, $tweet->text);
-					}
-					unset($url);
+	protected function linkHashtags(&$charArray, $entities) {
+		if (!empty($this->settings['linkHashtags'])) {
+			if (is_array($entities->hashtags)) {
+				foreach ($entities->hashtags as $hashtag) {
+					$hashtagText = '#' . $hashtag->text;
+					$typolinkConfiguration = array(
+						'parameter' => 'https://twitter.com/search?q=%23' . rawurlencode($hashtag->text),
+					);
+					$charArray[$hashtag->indices[0]] = $this->contentObject->typolink($hashtagText, $typolinkConfiguration);
+					$this->unsetArray($charArray, $hashtag->indices[0] + 1, $hashtag->indices[1] - 1);
 				}
+				unset($hashtag);
 			}
-			unset($tweet);
 		}
 	}
 
 	/**
-	 * @param array $tweets
+	 * @param array $charArray
+	 * @param object $entities
 	 * @return void
 	 */
-	protected function linkUrls(&$tweets) {
-		if (is_array($tweets) && !empty($this->settings['linkUrls'])) {
-			foreach ($tweets as $tweet) {
-				if ($tweet->entities && $tweet->entities->urls && is_array($tweet->entities->urls)) {
-					foreach ($tweet->entities->urls as $url) {
-						$urlInText = $this->getVisibleUrl($url);
-						$typolinkConfiguration = array(
-							'parameter' => $url->expanded_url,
-						);
-						$tweet->text = str_replace($urlInText, $this->contentObject->typolink($urlInText, $typolinkConfiguration), $tweet->text);
-					}
-					unset($url);
+	protected function linkUsernames(&$charArray, $entities) {
+		if (!empty($this->settings['linkUsernames'])) {
+			if (is_array($entities->user_mentions)) {
+				foreach ($entities->user_mentions as $username) {
+					$screenName = '@' . $username->screen_name;
+					$typolinkConfiguration = array(
+						'parameter' => 'https://twitter.com/' . rawurlencode($username->screen_name),
+					);
+					$charArray[$username->indices[0]] = $this->contentObject->typolink($screenName, $typolinkConfiguration);
+					$this->unsetArray($charArray, $username->indices[0] + 1, $username->indices[1] - 1);
 				}
+				unset($username);
 			}
-		}
-		unset($tweet);
-	}
-
-	/**
-	 * @param array $tweets
-	 * @return void
-	 */
-	protected function linkHashtags(&$tweets) {
-		if (is_array($tweets) && !empty($this->settings['linkHashtags'])) {
-			foreach ($tweets as $tweet) {
-				if ($tweet->entities && $tweet->entities->hashtags && is_array($tweet->entities->hashtags)) {
-					foreach ($tweet->entities->hashtags as $hashtag) {
-						$hastagText = '#' . $hashtag->text;
-						$typolinkConfiguration = array(
-							'parameter' => 'https://twitter.com/search?q=%23' . rawurlencode($hashtag->text),
-						);
-						$tweet->text = str_replace($hastagText, $this->contentObject->typolink($hastagText, $typolinkConfiguration), $tweet->text);
-					}
-					unset($hashtag);
-				}
-			}
-			unset($tweet);
 		}
 	}
 
 	/**
-	 * @param array $tweets
+	 * @param array $array
+	 * @param integer $start
+	 * @param integer $end
 	 * @return void
 	 */
-	protected function linkUsernames(&$tweets) {
-		if (is_array($tweets) && !empty($this->settings['linkUsernames'])) {
-			foreach ($tweets as $tweet) {
-				if ($tweet->entities && $tweet->entities->user_mentions && is_array($tweet->entities->user_mentions)) {
-					foreach ($tweet->entities->user_mentions as $username) {
-						$screenName = '@' . $username->screen_name;
-						$typolinkConfiguration = array(
-							'parameter' => 'https://twitter.com/' . rawurlencode($username->screen_name),
-						);
-						$tweet->text = str_replace($screenName, $this->contentObject->typolink($screenName, $typolinkConfiguration), $tweet->text);
-					}
-					unset($username);
-				}
+	protected function unsetArray(&$array, $start, $end = 0) {
+		if ($end === 0) {
+			$end = count($array);
+		}
+
+		for ($i = $start; $i <= $end; $i++) {
+			if (isset($array[$i])) {
+				unset($array[$i]);
 			}
-			unset($tweet);
 		}
 	}
 
