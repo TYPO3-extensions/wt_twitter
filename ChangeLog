@@ -1,3 +1,11 @@
+2014-06-06         [RELEASE] Release of wt_twitter 2.1.0 (Nicole Cordes)
+2014-06-06 0e6185d [BUGFIX] Add missing annotation for inject method (Nicole Cordes)
+2014-01-10 6c176e9 [FEATURE] Improve the integration of links (Nicole Cordes)
+2014-01-13 31b9a64 [FEATURE] Use internal link generation for usernames (Nicole Cordes)
+2014-01-10 75e1461 [BUGFIX] Use hashtags provided by Twitter api (Nicole Cordes)
+2014-01-10 ed4a6a8 [BUGFIX] Improve "Sign in with Twitter" process (Nicole Cordes)
+2014-01-10 1c090ea [BUGFIX] callApi function not using response parameter (Nicole Cordes)
+
 2013-11-19         [RELEASE] Release of wt_twitter 2.0.0 (Nicole Cordes)
 2013-11-13 ba1af9c [FEATURE] Add an option to rewrite links (Nicole Cordes)
 2013-11-13 9635964 [TASK] Improve link parsing function (Nicole Cordes)
