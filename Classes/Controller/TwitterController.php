@@ -36,6 +36,10 @@ class Tx_WtTwitter_Controller_TwitterController extends Tx_Extbase_MVC_Controlle
 	 */
 	protected $tweetRepository = NULL;
 
+	/**
+	 * @param Tx_WtTwitter_Domain_Repository_TweetRepository $tweetRepository
+	 * @return void
+	 */
 	public function injectTweetRepository(Tx_WtTwitter_Domain_Repository_TweetRepository $tweetRepository) {
 		$this->tweetRepository = $tweetRepository;
 	}
